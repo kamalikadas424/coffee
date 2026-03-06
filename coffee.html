@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Cafe Coffee Day</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f5e6d3;
+text-align:center;
+margin:0;
+}
+
+header{
+background:#6b3e26;
+color:white;
+padding:20px;
+}
+
+nav button{
+padding:10px 20px;
+margin:10px;
+border:none;
+background:#a0522d;
+color:white;
+cursor:pointer;
+border-radius:5px;
+}
+
+nav button:hover{
+background:#7a3b1e;
+}
+
+.hidden{
+display:none;
+}
+
+#coffeeList{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+padding:20px;
+}
+
+.coffeeCard{
+background:white;
+padding:10px;
+margin:10px;
+border-radius:10px;
+width:200px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.coffeeCard img{
+width:100%;
+border-radius:10px;
+}
+
+section{
+margin-top:20px;
+}
+
+input,select{
+padding:8px;
+margin:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Cafe Coffee Day ☕</h1>
+
+<nav>
+<button onclick="showCustomer()">Customer</button>
+<button onclick="showAdmin()">Admin</button>
+</nav>
+
+</header>
+
+<section>
+
+<h2>Our Coffee Menu</h2>
+
+<div id="coffeeList"></div>
+
+</section>
+
+<section id="customerSection" class="hidden">
+
+<h2>Order Coffee</h2>
+
+<select id="coffeeSelect"></select>
+
+<input type="number" id="quantity" placeholder="Quantity">
+
+<br>
+
+<button onclick="placeOrder()">Place Order</button>
+
+<p id="orderMsg"></p>
+
+</section>
+
+<section id="adminSection" class="hidden">
+
+<h2>Admin Panel</h2>
+
+<input type="text" id="coffeeName" placeholder="Coffee Name">
+
+<input type="file" id="coffeeImage">
+
+<br>
+
+<button onclick="addCoffee()">Add Coffee</button>
+
+</section>
+
+<script>
+
+let coffees = []
+
+function showCustomer(){
+document.getElementById("customerSection").classList.remove("hidden")
+document.getElementById("adminSection").classList.add("hidden")
+}
+
+function showAdmin(){
+document.getElementById("adminSection").classList.remove("hidden")
+document.getElementById("customerSection").classList.add("hidden")
+}
+
+function addCoffee(){
+
+let name = document.getElementById("coffeeName").value
+let file = document.getElementById("coffeeImage").files[0]
+
+if(!name || !file){
+alert("Enter coffee name and image")
+return
+}
+
+let reader = new FileReader()
+
+reader.onload = function(e){
+
+let coffee = {
+name:name,
+image:e.target.result
+}
+
+coffees.push(coffee)
+
+displayCoffees()
+updateDropdown()
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
+function displayCoffees(){
+
+let list = document.getElementById("coffeeList")
+
+list.innerHTML=""
+
+coffees.forEach(c => {
+
+let card = document.createElement("div")
+
+card.className="coffeeCard"
+
+card.innerHTML =
+`
+<img src="${c.image}">
+<h3>${c.name}</h3>
+`
+
+list.appendChild(card)
+
+})
+
+}
+
+function updateDropdown(){
+
+let select = document.getElementById("coffeeSelect")
+
+select.innerHTML=""
+
+coffees.forEach(c=>{
+
+let option = document.createElement("option")
+
+option.text = c.name
+
+select.add(option)
+
+})
+
+}
+
+function placeOrder(){
+
+let coffee = document.getElementById("coffeeSelect").value
+let qty = document.getElementById("quantity").value
+
+if(!coffee || !qty){
+alert("Select coffee and quantity")
+return
+}
+
+document.getElementById("orderMsg").innerText =
+"Order placed: "+qty+" "+coffee+" ☕"
+
+}
+
+</script>
+
+</body>
+
+</html>
